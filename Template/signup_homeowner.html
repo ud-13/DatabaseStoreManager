@@ -1,171 +1,385 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Home Owner Registration{% endblock %}
+{% block title %}Sign Up - Home Owner{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .form-container h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a73e8;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #1a73e8;
+        box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    .horizontal-group {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .horizontal-group .upload-section {
+        flex: 1;
+    }
+
+    .horizontal-group .form-group {
+        flex: 1;
+    }
+
+    .upload-section {
+        margin-top: 0;
+        position: relative;
+    }
+
+    .upload-section label {
+        display: block;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-section input[type="file"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    .preview-btn {
+        width: 100%;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        background-color: #1a73e8;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .preview-btn:hover {
+        background-color: #0d47a1;
+    }
+
+    .preview-btn.hidden {
+        display: none;
+    }
+
+    .submit-button {
+        width: 200px;
+        padding: 0.5rem;
+        background-color: #1a73e8;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .submit-button:hover {
+        background-color: #0d47a1;
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .help-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h3 class="mb-0">Home Owner Registration</h3>
+<div class="form-container">
+    <h2>Sign Up - Home Owner</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <div class="card-body">
-                <div class="alert alert-info">
-                    <p>Please fill in all required fields and upload the necessary documents.</p>
-                </div>
-                
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h4 class="border-bottom pb-2">Account Information</h4>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="id_email" class="form-label">Email Address*</label>
-                                {{ form.email }}
-                                {% if form.email.errors %}
-                                    <div class="text-danger">{{ form.email.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="id_password" class="form-label">Password*</label>
-                                {{ form.password }}
-                                {% if form.password.errors %}
-                                    <div class="text-danger">{{ form.password.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h4 class="border-bottom pb-2">Personal Information</h4>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_first_name" class="form-label">First Name*</label>
-                                {{ form.first_name }}
-                                {% if form.first_name.errors %}
-                                    <div class="text-danger">{{ form.first_name.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_middle_name" class="form-label">Middle Name</label>
-                                {{ form.middle_name }}
-                                {% if form.middle_name.errors %}
-                                    <div class="text-danger">{{ form.middle_name.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_last_name" class="form-label">Last Name*</label>
-                                {{ form.last_name }}
-                                {% if form.last_name.errors %}
-                                    <div class="text-danger">{{ form.last_name.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_date_of_birth" class="form-label">Date of Birth*</label>
-                                {{ form.date_of_birth }}
-                                {% if form.date_of_birth.errors %}
-                                    <div class="text-danger">{{ form.date_of_birth.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_phone" class="form-label">Phone Number*</label>
-                                {{ form.phone }}
-                                {% if form.phone.errors %}
-                                    <div class="text-danger">{{ form.phone.errors }}</div>
-                                {% endif %}
-                                <small class="form-text text-muted">10-digit number without spaces or hyphens</small>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_photo" class="form-label">Photo*</label>
-                                {{ form.photo }}
-                                {% if form.photo.errors %}
-                                    <div class="text-danger">{{ form.photo.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h4 class="border-bottom pb-2">Document Information</h4>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="id_aadhar_card" class="form-label">Aadhar Card*</label>
-                                {{ form.aadhar_card }}
-                                {% if form.aadhar_card.errors %}
-                                    <div class="text-danger">{{ form.aadhar_card.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="id_aadhar_number" class="form-label">Aadhar Number*</label>
-                                {{ form.aadhar_number }}
-                                {% if form.aadhar_number.errors %}
-                                    <div class="text-danger">{{ form.aadhar_number.errors }}</div>
-                                {% endif %}
-                                <small class="form-text text-muted">12-digit number without spaces</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_sikkim_certificate" class="form-label">Sikkim Certificate*</label>
-                                {{ form.sikkim_certificate }}
-                                {% if form.sikkim_certificate.errors %}
-                                    <div class="text-danger">{{ form.sikkim_certificate.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_residential_certificate" class="form-label">Residential Certificate*</label>
-                                {{ form.residential_certificate }}
-                                {% if form.residential_certificate.errors %}
-                                    <div class="text-danger">{{ form.residential_certificate.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_land_parcha" class="form-label">Land Parcha*</label>
-                                {{ form.land_parcha }}
-                                {% if form.land_parcha.errors %}
-                                    <div class="text-danger">{{ form.land_parcha.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success btn-lg">Register as Home Owner</button>
-                    </div>
-                </form>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post" enctype="multipart/form-data" id="signup-form">
+        {% csrf_token %}
+        
+        <!-- Account Section -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_email">Email Address*</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="error-message">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_password">Password*</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="error-message">{{ form.password.errors }}</div>
+                {% endif %}
             </div>
         </div>
-    </div>
+
+        <!-- Name Fields -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_first_name">First Name*</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <div class="error-message">{{ form.first_name.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_middle_name">Middle Name</label>
+                {{ form.middle_name }}
+                {% if form.middle_name.errors %}
+                    <div class="error-message">{{ form.middle_name.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_last_name">Last Name*</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <div class="error-message">{{ form.last_name.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Date of Birth and Age -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_date_of_birth">Date of Birth*</label>
+                {{ form.date_of_birth }}
+                {% if form.date_of_birth.errors %}
+                    <div class="error-message">{{ form.date_of_birth.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Passport Size Picture and Phone Number (Horizontal) -->
+        <div class="horizontal-group">
+            <div class="upload-section">
+                <label for="id_photo">Passport Size Picture*</label>
+                {{ form.photo }}
+                {% if form.photo.errors %}
+                    <div class="error-message">{{ form.photo.errors }}</div>
+                {% endif %}
+                <button type="button" id="photo-preview" class="preview-btn hidden" onclick="previewFile('id_photo')">Preview Photo</button>
+            </div>
+            <div class="form-group">
+                <label for="id_phone">Phone Number*</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                    <div class="error-message">{{ form.phone.errors }}</div>
+                {% endif %}
+                <div class="help-text">10-digit number without spaces or hyphens</div>
+            </div>
+        </div>
+
+        <!-- Aadhar Card Upload and Number (Horizontal) -->
+        <div class="horizontal-group">
+            <div class="upload-section">
+                <label for="id_aadhar_card">Upload Aadhar Card*</label>
+                {{ form.aadhar_card }}
+                {% if form.aadhar_card.errors %}
+                    <div class="error-message">{{ form.aadhar_card.errors }}</div>
+                {% endif %}
+                <button type="button" id="aadhar-preview" class="preview-btn hidden" onclick="previewFile('id_aadhar_card')">Preview Aadhar Card</button>
+            </div>
+            <div class="form-group">
+                <label for="id_aadhar_number">Aadhar Card Number*</label>
+                {{ form.aadhar_number }}
+                {% if form.aadhar_number.errors %}
+                    <div class="error-message">{{ form.aadhar_number.errors }}</div>
+                {% endif %}
+                <div class="help-text">12-digit number without spaces</div>
+            </div>
+        </div>
+
+        <!-- Sikkim Certificate and Residential Certificate (Horizontal) -->
+        <div class="horizontal-group">
+            <div class="upload-section">
+                <label for="id_sikkim_certificate">Upload Sikkim Certificate*</label>
+                {{ form.sikkim_certificate }}
+                {% if form.sikkim_certificate.errors %}
+                    <div class="error-message">{{ form.sikkim_certificate.errors }}</div>
+                {% endif %}
+                <button type="button" id="sikkim-preview" class="preview-btn hidden" onclick="previewFile('id_sikkim_certificate')">Preview Sikkim Certificate</button>
+            </div>
+            <div class="upload-section">
+                <label for="id_residential_certificate">Upload Residential Certificate*</label>
+                {{ form.residential_certificate }}
+                {% if form.residential_certificate.errors %}
+                    <div class="error-message">{{ form.residential_certificate.errors }}</div>
+                {% endif %}
+                <button type="button" id="residential-preview" class="preview-btn hidden" onclick="previewFile('id_residential_certificate')">Preview Residential Certificate</button>
+            </div>
+        </div>
+
+        <!-- Land Parcha Upload -->
+        <div class="upload-section">
+            <label for="id_land_parcha">Upload Land Parcha*</label>
+            {{ form.land_parcha }}
+            {% if form.land_parcha.errors %}
+                <div class="error-message">{{ form.land_parcha.errors }}</div>
+            {% endif %}
+            <button type="button" id="land-parcha-preview" class="preview-btn hidden" onclick="previewFile('id_land_parcha')">Preview Land Parcha</button>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-button">Create Account</button>
+    </form>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Function to calculate age based on Date of Birth
+    function calculateAge() {
+        const dobInput = document.getElementById('id_date_of_birth');
+        if (dobInput && dobInput.value) {
+            const dob = new Date(dobInput.value);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+        return null;
+    }
+
+    // Initialize file input change listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        const dobInput = document.getElementById('id_date_of_birth');
+        if (dobInput) {
+            dobInput.addEventListener('change', calculateAge);
+        }
+        
+        // Set up event listeners for all file inputs
+        const fileInputs = ['id_photo', 'id_aadhar_card', 'id_sikkim_certificate', 'id_residential_certificate', 'id_land_parcha'];
+        fileInputs.forEach(inputId => {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.addEventListener('change', function() {
+                    togglePreviewButton(this, inputId.replace('id_', '') + '-preview');
+                });
+            }
+        });
+    });
+
+    // Show/hide preview button based on file selection
+    function togglePreviewButton(input, previewBtnId) {
+        const previewBtn = document.getElementById(previewBtnId);
+        if (previewBtn) {
+            if (input.files && input.files[0]) {
+                previewBtn.classList.remove('hidden');
+            } else {
+                previewBtn.classList.add('hidden');
+            }
+        }
+    }
+
+    // Preview uploaded file
+    function previewFile(inputId) {
+        const input = document.getElementById(inputId);
+        if (!input || !input.files || !input.files[0]) {
+            return;
+        }
+        
+        const file = input.files[0];
+        const fileType = file.type;
+        const url = URL.createObjectURL(file);
+        const newWindow = window.open("", "_blank", "width=800,height=600");
+
+        if (fileType.startsWith('image/')) {
+            newWindow.document.write(`
+                <html>
+                <head><title>File Preview</title></head>
+                <body style="margin: 0; display: flex; justify-content: center; align-items: center; background: #f8f9fa;">
+                    <img src="${url}" style="max-width: 100%; max-height: 100%;">
+                </body>
+                </html>
+            `);
+        } else if (fileType === 'application/pdf') {
+            newWindow.document.write(`
+                <html>
+                <head><title>File Preview</title></head>
+                <body style="margin: 0;">
+                    <embed src="${url}" width="100%" height="100%" type="application/pdf">
+                </body>
+                </html>
+            `);
+        }
+        newWindow.document.close();
+    }
+</script>
 {% endblock %}
