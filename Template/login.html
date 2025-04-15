@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Tenant Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Login / Sign Up</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <p>Please verify your email to continue. An OTP will be sent to your email address.</p>
+                </div>
+                
+                <form id="emailForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="tenant">Tenant</option>
+                            <option value="home_owner">Home Owner</option>
+                            <option value="police">Police</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="sendOtpBtn">Send OTP</button>
+                </form>
+                
+                <form id="otpForm" style="display: none;">
+                    <div class="mb-3">
+                        <label for="otp" class="form-label">Enter OTP</label>
+                        <input type="text" class="form-control" id="otp" name="otp" maxlength="6" required>
+                        <small class="form-text text-muted">Check your email for the OTP. It will expire in 5 minutes.</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success btn-block" id="verifyOtpBtn">Verify OTP</button>
+                    <button type="button" class="btn btn-outline-secondary btn-block mt-2" id="resendOtpBtn">Resend OTP</button>
+                </form>
+                
+                <div id="otpSuccess" class="alert alert-success mt-3" style="display: none;">
+                    <p>OTP verified successfully! Redirecting...</p>
+                </div>
+                
+                <div id="otpError" class="alert alert-danger mt-3" style="display: none;">
+                    <p id="otpErrorMessage"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Handle send OTP
+        $('#emailForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const email = $('#email').val();
+            const role = $('#role').val();
+            
+            // Disable the button to prevent multiple submissions
+            $('#sendOtpBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...');
+            
+            // Send OTP via AJAX
+            $.ajax({
+                url: '{% url "send_otp" %}',
+                type: 'POST',
+                data: {
+                    email: email,
+                    role: role
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Hide email form and show OTP form
+                        $('#emailForm').hide();
+                        $('#otpForm').show();
+                        // Store email and role for OTP verification
+                        $('#otpForm').data('email', email);
+                        $('#otpForm').data('role', role);
+                    } else {
+                        // Show error message
+                        $('#otpError').show();
+                        $('#otpErrorMessage').text(response.error || 'An error occurred');
+                    }
+                },
+                error: function(xhr) {
+                    // Show error message
+                    $('#otpError').show();
+                    $('#otpErrorMessage').text(xhr.responseJSON?.error || 'An error occurred while sending OTP');
+                },
+                complete: function() {
+                    // Re-enable the button
+                    $('#sendOtpBtn').prop('disabled', false).text('Send OTP');
+                }
+            });
+        });
+        
+        // Handle OTP verification
+        $('#otpForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const email = $(this).data('email');
+            const role = $(this).data('role');
+            const otp = $('#otp').val();
+            
+            // Disable the button to prevent multiple submissions
+            $('#verifyOtpBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Verifying...');
+            
+            // Verify OTP via AJAX
+            $.ajax({
+                url: '{% url "verify_otp" %}',
+                type: 'POST',
+                data: {
+                    email: email,
+                    otp: otp,
+                    role: role
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Show success message
+                        $('#otpForm').hide();
+                        $('#otpSuccess').show();
+                        $('#otpError').hide();
+                        
+                        // Redirect after a short delay
+                        setTimeout(function() {
+                            window.location.href = response.redirect_url || '/';
+                        }, 1500);
+                    } else {
+                        // Show error message
+                        $('#otpError').show();
+                        $('#otpErrorMessage').text(response.error || 'Invalid OTP');
+                    }
+                },
+                error: function(xhr) {
+                    // Show error message
+                    $('#otpError').show();
+                    $('#otpErrorMessage').text(xhr.responseJSON?.error || 'An error occurred during verification');
+                },
+                complete: function() {
+                    // Re-enable the button
+                    $('#verifyOtpBtn').prop('disabled', false).text('Verify OTP');
+                }
+            });
+        });
+        
+        // Handle resend OTP
+        $('#resendOtpBtn').on('click', function() {
+            const email = $('#otpForm').data('email');
+            const role = $('#otpForm').data('role');
+            
+            // Disable the button to prevent multiple submissions
+            $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Resending...');
+            
+            // Resend OTP via AJAX
+            $.ajax({
+                url: '{% url "send_otp" %}',
+                type: 'POST',
+                data: {
+                    email: email,
+                    role: role
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Show success message
+                        $('#otpError').hide();
+                        alert('OTP resent successfully. Please check your email.');
+                    } else {
+                        // Show error message
+                        $('#otpError').show();
+                        $('#otpErrorMessage').text(response.error || 'An error occurred');
+                    }
+                },
+                error: function(xhr) {
+                    // Show error message
+                    $('#otpError').show();
+                    $('#otpErrorMessage').text(xhr.responseJSON?.error || 'An error occurred while resending OTP');
+                },
+                complete: function() {
+                    // Re-enable the button
+                    $('#resendOtpBtn').prop('disabled', false).text('Resend OTP');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

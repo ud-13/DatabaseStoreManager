@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+
+{% block title %}Police Dashboard - Tenant Management System{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Police Dashboard</h4>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-clipboard-list"></i> Pending Verifications
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-check-circle"></i> Approved Tenants
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-times-circle"></i> Rejected Tenants
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-search"></i> Search Tenants
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Quick Stats</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Pending Verifications
+                            <span class="badge bg-warning rounded-pill">{{ tenants|length }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Approved Today
+                            <span class="badge bg-success rounded-pill">0</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Rejected Today
+                            <span class="badge bg-danger rounded-pill">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Pending Tenant Verifications</h4>
+                    <span class="badge bg-light text-dark">Total: {{ tenants|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if tenants %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone Number</th>
+                                    <th>District</th>
+                                    <th>Police Station</th>
+                                    <th>Date Registered</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tenant in tenants %}
+                                <tr>
+                                    <td>{{ tenant.first_name }} {{ tenant.last_name }}</td>
+                                    <td>{{ tenant.tenant_phone_number }}</td>
+                                    <td>{{ tenant.district }}</td>
+                                    <td>{{ tenant.police_station }}</td>
+                                    <td>{{ tenant.created_at|date:"d M Y" }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#tenantModal-{{ tenant.id }}">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
+                                        <a href="{% url 'police_approve_tenant' tenant.id %}" class="btn btn-sm btn-success" onclick="return confirm('Are you sure you want to approve this tenant?')">
+                                            <i class="fas fa-check"></i> Approve
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-{{ tenant.id }}">
+                                            <i class="fas fa-times"></i> Reject
+                                        </button>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Modal for tenant details -->
+                                <div class="modal fade" id="tenantModal-{{ tenant.id }}" tabindex="-1" aria-labelledby="tenantModalLabel-{{ tenant.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-primary text-white">
+                                                <h5 class="modal-title" id="tenantModalLabel-{{ tenant.id }}">{{ tenant.first_name }} {{ tenant.last_name }} - Verification</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-4 text-center mb-3">
+                                                        <img src="{{ tenant.photo.url }}" alt="Tenant Photo" class="img-fluid img-thumbnail" style="max-height: 200px;">
+                                                        <p class="mt-2"><strong>Tenant Photo</strong></p>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <h5>Personal Information</h5>
+                                                        <table class="table table-sm">
+                                                            <tr>
+                                                                <th width="40%">Full Name</th>
+                                                                <td>{{ tenant.first_name }} {% if tenant.middle_name %}{{ tenant.middle_name }}{% endif %} {{ tenant.last_name }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Date of Birth</th>
+                                                                <td>{{ tenant.date_of_birth }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Age</th>
+                                                                <td>{{ tenant.age }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Father's Name</th>
+                                                                <td>{{ tenant.father_name }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Phone Number</th>
+                                                                <td>{{ tenant.tenant_phone_number }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Profession</th>
+                                                                <td>{{ tenant.get_profession_display }}{% if tenant.profession == 'Others' %} ({{ tenant.other_profession }}){% endif %}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                
+                                                <h5 class="mt-4">Address Information</h5>
+                                                <table class="table table-sm">
+                                                    <tr>
+                                                        <th width="30%">Permanent Address</th>
+                                                        <td>{{ tenant.permanent_address }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Village/Town</th>
+                                                        <td>{{ tenant.village }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Tehsil</th>
+                                                        <td>{{ tenant.tehsil }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Post Office</th>
+                                                        <td>{{ tenant.post_office }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>PIN Code</th>
+                                                        <td>{{ tenant.pin_code }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Police Station</th>
+                                                        <td>{{ tenant.police_station }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>District</th>
+                                                        <td>{{ tenant.district }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Homeowner Phone</th>
+                                                        <td>{{ tenant.owner_phone_number }}</td>
+                                                    </tr>
+                                                </table>
+                                                
+                                                <h5 class="mt-4">Certificates & Documents</h5>
+                                                <div class="row">
+                                                    {% if tenant.serving_employee == 'Yes' and tenant.serving_certificate %}
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-header bg-light">Serving Certificate</div>
+                                                            <div class="card-body text-center">
+                                                                <a href="{{ tenant.serving_certificate.url }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-eye"></i> View Document
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    
+                                                    {% if tenant.retired_employee == 'Yes' and tenant.retired_certificate %}
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-header bg-light">Retirement Certificate</div>
+                                                            <div class="card-body text-center">
+                                                                <a href="{{ tenant.retired_certificate.url }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-eye"></i> View Document
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    
+                                                    {% if tenant.sikkim_certificate == 'Yes' and tenant.sikkim_certificate_file %}
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-header bg-light">Sikkim Certificate</div>
+                                                            <div class="card-body text-center">
+                                                                <a href="{{ tenant.sikkim_certificate_file.url }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-eye"></i> View Document
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <h5 class="mt-4">Family Members</h5>
+                                                {% if tenant.family_members.all %}
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm table-bordered">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Age</th>
+                                                                <th>Relationship</th>
+                                                                <th>Profession</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for member in tenant.family_members.all %}
+                                                            <tr>
+                                                                <td>{{ member.first_name }} {% if member.middle_name %}{{ member.middle_name }}{% endif %} {{ member.last_name }}</td>
+                                                                <td>{{ member.age }}</td>
+                                                                <td>{{ member.relationship }}</td>
+                                                                <td>{{ member.profession }}</td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                {% else %}
+                                                <p class="text-muted">No family members listed</p>
+                                                {% endif %}
+                                                
+                                                <h5 class="mt-4">Previous Residences</h5>
+                                                {% if tenant.previous_residences.all %}
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm table-bordered">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>From Place</th>
+                                                                <th>To Place</th>
+                                                                <th>Address</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for residence in tenant.previous_residences.all %}
+                                                            <tr>
+                                                                <td>{{ residence.from_place }}</td>
+                                                                <td>{{ residence.to_place }}</td>
+                                                                <td>{{ residence.address }}</td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                {% else %}
+                                                <p class="text-muted">No previous residences listed</p>
+                                                {% endif %}
+                                                
+                                                <h5 class="mt-4">Verification Actions</h5>
+                                                <div class="d-flex gap-2">
+                                                    <form method="post" action="{% url 'police_approve_tenant' tenant.id %}" class="d-inline">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-success">
+                                                            <i class="fas fa-check"></i> Approve Tenant
+                                                        </button>
+                                                    </form>
+                                                    
+                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-{{ tenant.id }}" data-bs-dismiss="modal">
+                                                        <i class="fas fa-times"></i> Reject Tenant
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Modal for tenant rejection -->
+                                <div class="modal fade" id="rejectModal-{{ tenant.id }}" tabindex="-1" aria-labelledby="rejectModalLabel-{{ tenant.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title" id="rejectModalLabel-{{ tenant.id }}">Reject Tenant Verification</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form method="post" action="{% url 'police_reject_tenant' tenant.id %}">
+                                                {% csrf_token %}
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="remark" class="form-label">Reason for Rejection</label>
+                                                        <textarea class="form-control" id="remark" name="remark" rows="4" required></textarea>
+                                                        <div class="form-text">Please provide a detailed reason for rejecting this tenant's verification.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger">Submit Rejection</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <p>No pending tenant verifications at this time.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

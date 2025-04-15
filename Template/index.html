@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Tenant Management System{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to the Tenant Management System</h1>
+    <p class="lead">A comprehensive solution for managing tenant registrations, verifications, and approvals.</p>
+    <hr class="my-4">
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-alt fa-4x mb-3 text-primary"></i>
+                    <h3 class="card-title">Tenants</h3>
+                    <p class="card-text">Register as a tenant and submit your information for verification.</p>
+                    <a href="{% url 'Registration' %}" class="btn btn-primary">Tenant Registration</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-home fa-4x mb-3 text-success"></i>
+                    <h3 class="card-title">Home Owners</h3>
+                    <p class="card-text">Register as a home owner and manage your rental properties.</p>
+                    <a href="{% url 'signup_homeowner' %}" class="btn btn-success">Home Owner Registration</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-shield-alt fa-4x mb-3 text-danger"></i>
+                    <h3 class="card-title">Police</h3>
+                    <p class="card-text">Police officials can verify and approve tenant registrations.</p>
+                    <a href="{% url 'SignUpPolice' %}" class="btn btn-danger">Police Portal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-5">
+        <h2>How It Works</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h1 class="display-4 text-primary">1</h1>
+                        <h5>Registration</h5>
+                        <p>Register with your details and family information</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h1 class="display-4 text-primary">2</h1>
+                        <h5>Verification</h5>
+                        <p>Get your details verified by the homeowner</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h1 class="display-4 text-primary">3</h1>
+                        <h5>Police Approval</h5>
+                        <p>Police verifies and approves your tenant registration</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h1 class="display-4 text-primary">4</h1>
+                        <h5>Confirmation</h5>
+                        <p>Receive confirmation of your successful registration</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

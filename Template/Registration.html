@@ -1,0 +1,560 @@
+{% extends 'base.html' %}
+
+{% block title %}Tenant Registration{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 30px;
+        background-color: #f9f9f9;
+    }
+    
+    .form-section-title {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    
+    .btn-add-more {
+        margin-top: 10px;
+    }
+    
+    .family-member-entry, .previous-residence-entry {
+        background-color: #f0f0f0;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        position: relative;
+    }
+    
+    .remove-entry {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: #dc3545;
+        cursor: pointer;
+    }
+    
+    .hidden-field {
+        display: none;
+    }
+    
+    .form-check-label {
+        margin-left: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Tenant Registration Form</h1>
+
+<div class="alert alert-info">
+    <p><strong>Instructions:</strong> Please fill out all required fields marked with *. Upload clear images of all documents.</p>
+</div>
+
+<form id="tenantRegistrationForm" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    
+    <!-- Personal Information -->
+    <div class="form-section">
+        <h3 class="form-section-title">Personal Information</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="first_name" class="form-label">First Name*</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="middle_name" class="form-label">Middle Name</label>
+                    <input type="text" class="form-control" id="middle_name" name="middle_name">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="last_name" class="form-label">Last Name*</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="date_of_birth" class="form-label">Date of Birth*</label>
+                    <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" readonly>
+                    <small class="form-text text-muted">This will be calculated automatically</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="photo" class="form-label">Photo*</label>
+                    <input type="file" class="form-control" id="photo" name="photo" accept="image/*" required>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="father_name" class="form-label">Father's Name*</label>
+                    <input type="text" class="form-control" id="father_name" name="father_name" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="tenant_phone_number" class="form-label">Phone Number*</label>
+                    <input type="text" class="form-control" id="tenant_phone_number" name="tenant_phone_number" maxlength="10" pattern="[0-9]{10}" required>
+                    <small class="form-text text-muted">10-digit number without spaces or hyphens</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Address Information -->
+    <div class="form-section">
+        <h3 class="form-section-title">Address Information</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label for="permanent_address" class="form-label">Permanent Address*</label>
+                    <textarea class="form-control" id="permanent_address" name="permanent_address" rows="3" required></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="village" class="form-label">Village/Town*</label>
+                    <input type="text" class="form-control" id="village" name="village" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="tehsil" class="form-label">Tehsil*</label>
+                    <input type="text" class="form-control" id="tehsil" name="tehsil" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="post_office" class="form-label">Post Office*</label>
+                    <input type="text" class="form-control" id="post_office" name="post_office" required>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label for="pin_code" class="form-label">PIN Code*</label>
+                    <input type="text" class="form-control" id="pin_code" name="pin_code" maxlength="6" pattern="[0-9]{6}" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label for="police_station" class="form-label">Police Station*</label>
+                    <input type="text" class="form-control" id="police_station" name="police_station" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label for="district" class="form-label">District*</label>
+                    <select class="form-control" id="district" name="district" required>
+                        <option value="">Select District</option>
+                        <option value="Gangtok">Gangtok</option>
+                        <option value="Mangan">Mangan</option>
+                        <option value="Pakyong">Pakyong</option>
+                        <option value="Soreng">Soreng</option>
+                        <option value="Namchi">Namchi</option>
+                        <option value="Gyalshing">Gyalshing</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label for="owner_phone_number" class="form-label">Homeowner Phone Number*</label>
+                    <input type="text" class="form-control" id="owner_phone_number" name="owner_phone_number" maxlength="10" pattern="[0-9]{10}" required>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Professional Information -->
+    <div class="form-section">
+        <h3 class="form-section-title">Professional Information</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="profession" class="form-label">Profession*</label>
+                    <select class="form-control" id="profession" name="profession" required>
+                        <option value="">Select Profession</option>
+                        <option value="Government Servant">Government Servant</option>
+                        <option value="Public Sector Undertaking Employee">Public Sector Undertaking Employee</option>
+                        <option value="Retired Government Servant">Retired Government Servant</option>
+                        <option value="Retired PSU Employee">Retired PSU Employee</option>
+                        <option value="Businessman/Self-Employed">Businessman/Self-Employed</option>
+                        <option value="Private Employee">Private Employee</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3" id="otherProfessionField" style="display: none;">
+                    <label for="other_profession" class="form-label">Specify Other Profession*</label>
+                    <input type="text" class="form-control" id="other_profession" name="other_profession">
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Are you a serving employee?*</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="serving_employee" id="serving_employee_yes" value="Yes">
+                        <label class="form-check-label" for="serving_employee_yes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="serving_employee" id="serving_employee_no" value="No" checked>
+                        <label class="form-check-label" for="serving_employee_no">No</label>
+                    </div>
+                </div>
+                <div class="mb-3" id="servingCertificateField" style="display: none;">
+                    <label for="serving_certificate" class="form-label">Upload Serving Certificate*</label>
+                    <input type="file" class="form-control" id="serving_certificate" name="serving_certificate" accept="image/*,.pdf">
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Are you a retired employee?*</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="retired_employee" id="retired_employee_yes" value="Yes">
+                        <label class="form-check-label" for="retired_employee_yes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="retired_employee" id="retired_employee_no" value="No" checked>
+                        <label class="form-check-label" for="retired_employee_no">No</label>
+                    </div>
+                </div>
+                <div class="mb-3" id="retiredCertificateField" style="display: none;">
+                    <label for="retired_certificate" class="form-label">Upload Retirement Certificate*</label>
+                    <input type="file" class="form-control" id="retired_certificate" name="retired_certificate" accept="image/*,.pdf">
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Do you have a Sikkim Certificate?*</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="sikkim_certificate" id="sikkim_certificate_yes" value="Yes">
+                        <label class="form-check-label" for="sikkim_certificate_yes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="sikkim_certificate" id="sikkim_certificate_no" value="No" checked>
+                        <label class="form-check-label" for="sikkim_certificate_no">No</label>
+                    </div>
+                </div>
+                <div class="mb-3" id="sikkimCertificateField" style="display: none;">
+                    <label for="sikkim_certificate_file" class="form-label">Upload Sikkim Certificate*</label>
+                    <input type="file" class="form-control" id="sikkim_certificate_file" name="sikkim_certificate_file" accept="image/*,.pdf">
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="previous_police_station" class="form-label">Previous Police Station (if any)</label>
+                    <input type="text" class="form-control" id="previous_police_station" name="previous_police_station">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Family Members -->
+    <div class="form-section">
+        <h3 class="form-section-title">Family Members</h3>
+        <p>Add details of family members staying with you</p>
+        
+        <div id="family-members-container">
+            <!-- Family member entries will be added here dynamically -->
+        </div>
+        
+        <button type="button" class="btn btn-outline-primary btn-add-more" id="add-family-member">
+            <i class="fas fa-plus"></i> Add Family Member
+        </button>
+    </div>
+    
+    <!-- Previous Residences -->
+    <div class="form-section">
+        <h3 class="form-section-title">Previous Residences</h3>
+        <p>Add details of your previous residences</p>
+        
+        <div id="previous-residences-container">
+            <!-- Previous residence entries will be added here dynamically -->
+        </div>
+        
+        <button type="button" class="btn btn-outline-primary btn-add-more" id="add-previous-residence">
+            <i class="fas fa-plus"></i> Add Previous Residence
+        </button>
+    </div>
+    
+    <!-- Signature Section -->
+    <div class="form-section">
+        <h3 class="form-section-title">Signature</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="signature_date" class="form-label">Date*</label>
+                    <input type="date" class="form-control" id="signature_date" name="signature_date" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="signature" class="form-label">Signature* (Upload image of your signature)</label>
+                    <input type="file" class="form-control" id="signature" name="signature" accept="image/*" required>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mb-5">
+        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">Submit Registration</button>
+    </div>
+</form>
+
+<!-- Templates for dynamic entries -->
+<template id="family-member-template">
+    <div class="family-member-entry">
+        <i class="fas fa-times remove-entry" title="Remove"></i>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">First Name*</label>
+                    <input type="text" class="form-control" name="family_members[INDEX][first_name]" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Middle Name</label>
+                    <input type="text" class="form-control" name="family_members[INDEX][middle_name]">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Last Name*</label>
+                    <input type="text" class="form-control" name="family_members[INDEX][last_name]" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Date of Birth*</label>
+                    <input type="date" class="form-control family-dob" name="family_members[INDEX][dob]" required>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="mb-3">
+                    <label class="form-label">Age</label>
+                    <input type="number" class="form-control family-age" name="family_members[INDEX][age]" readonly>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Relationship*</label>
+                    <input type="text" class="form-control" name="family_members[INDEX][relationship]" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Profession*</label>
+                    <input type="text" class="form-control" name="family_members[INDEX][profession]" required>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="previous-residence-template">
+    <div class="previous-residence-entry">
+        <i class="fas fa-times remove-entry" title="Remove"></i>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">From Place*</label>
+                    <input type="text" class="form-control" name="previous_residences[INDEX][from_place]" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">To Place*</label>
+                    <input type="text" class="form-control" name="previous_residences[INDEX][to_place]" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Address*</label>
+                    <input type="text" class="form-control" name="previous_residences[INDEX][address]" required>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        let familyMemberCount = 0;
+        let previousResidenceCount = 0;
+        
+        // Calculate age from date of birth
+        function calculateAge(dateOfBirth) {
+            if (!dateOfBirth) return null;
+            
+            const birthDate = new Date(dateOfBirth);
+            const today = new Date();
+            
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+        
+        // Handle date of birth change to calculate age
+        $('#date_of_birth').on('change', function() {
+            const dob = $(this).val();
+            const age = calculateAge(dob);
+            $('#age').val(age);
+        });
+        
+        // Show/hide other profession field
+        $('#profession').on('change', function() {
+            if ($(this).val() === 'Others') {
+                $('#otherProfessionField').show();
+                $('#other_profession').prop('required', true);
+            } else {
+                $('#otherProfessionField').hide();
+                $('#other_profession').prop('required', false);
+            }
+        });
+        
+        // Show/hide serving certificate field
+        $('input[name="serving_employee"]').on('change', function() {
+            if ($(this).val() === 'Yes') {
+                $('#servingCertificateField').show();
+                $('#serving_certificate').prop('required', true);
+            } else {
+                $('#servingCertificateField').hide();
+                $('#serving_certificate').prop('required', false);
+            }
+        });
+        
+        // Show/hide retired certificate field
+        $('input[name="retired_employee"]').on('change', function() {
+            if ($(this).val() === 'Yes') {
+                $('#retiredCertificateField').show();
+                $('#retired_certificate').prop('required', true);
+            } else {
+                $('#retiredCertificateField').hide();
+                $('#retired_certificate').prop('required', false);
+            }
+        });
+        
+        // Show/hide Sikkim certificate field
+        $('input[name="sikkim_certificate"]').on('change', function() {
+            if ($(this).val() === 'Yes') {
+                $('#sikkimCertificateField').show();
+                $('#sikkim_certificate_file').prop('required', true);
+            } else {
+                $('#sikkimCertificateField').hide();
+                $('#sikkim_certificate_file').prop('required', false);
+            }
+        });
+        
+        // Add family member
+        $('#add-family-member').on('click', function() {
+            const template = $('#family-member-template').html();
+            const entry = template.replace(/INDEX/g, familyMemberCount);
+            $('#family-members-container').append(entry);
+            
+            // Set up event handler for the newly added family member's DOB
+            $(`[name="family_members[${familyMemberCount}][dob]"]`).on('change', function() {
+                const dob = $(this).val();
+                const age = calculateAge(dob);
+                $(`[name="family_members[${familyMemberCount}][age]"]`).val(age);
+            });
+            
+            familyMemberCount++;
+        });
+        
+        // Add previous residence
+        $('#add-previous-residence').on('click', function() {
+            const template = $('#previous-residence-template').html();
+            const entry = template.replace(/INDEX/g, previousResidenceCount);
+            $('#previous-residences-container').append(entry);
+            previousResidenceCount++;
+        });
+        
+        // Remove entry (family member or previous residence)
+        $(document).on('click', '.remove-entry', function() {
+            $(this).parent().remove();
+        });
+        
+        // Form submission
+        $('#tenantRegistrationForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            // Disable submit button to prevent multiple submissions
+            $('#submitBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...');
+            
+            const formData = new FormData(this);
+            
+            $.ajax({
+                url: '{% url "Registration" %}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        alert('Registration submitted successfully!');
+                        window.location.href = response.redirect_url;
+                    } else {
+                        alert('Error: ' + response.error);
+                        $('#submitBtn').prop('disabled', false).text('Submit Registration');
+                    }
+                },
+                error: function(xhr) {
+                    const errorMsg = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'An unknown error occurred';
+                    alert('Error: ' + errorMsg);
+                    $('#submitBtn').prop('disabled', false).text('Submit Registration');
+                }
+            });
+        });
+        
+        // Add at least one family member and previous residence by default
+        $('#add-family-member').click();
+        $('#add-previous-residence').click();
+    });
+</script>
+{% endblock %}

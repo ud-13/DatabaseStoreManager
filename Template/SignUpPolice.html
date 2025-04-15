@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Police Registration{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">Police Portal</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <p><i class="fas fa-exclamation-triangle"></i> This portal is exclusively for authorized police personnel.</p>
+                        <p>To gain access, please complete the verification process by providing your official email address for OTP verification.</p>
+                    </div>
+                    
+                    <div class="text-center mb-4">
+                        <i class="fas fa-shield-alt fa-5x text-danger"></i>
+                    </div>
+                    
+                    <div class="row justify-content-center">
+                        <div class="col-md-10">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Authentication Required</h5>
+                                    <p class="card-text text-center">Please use your official police department email address for verification.</p>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <a href="{% url 'login' %}?role=police" class="btn btn-danger">Proceed to Verification</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5>Police Verification Process:</h5>
+                        <ol>
+                            <li>Login using your official email address</li>
+                            <li>Verify your identity through OTP verification</li>
+                            <li>Access the police dashboard to review tenant applications</li>
+                            <li>Approve or reject tenant applications with appropriate remarks</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
