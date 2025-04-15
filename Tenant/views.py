@@ -35,10 +35,11 @@ def is_tenant(user):
 
 # View functions
 def login(request):
+    next_url = request.GET.get('next', '')
     if request.method == 'GET':
         form = UserLoginForm()
-        return render(request, 'login.html', {'form': form})
-    return render(request, 'login.html')
+        return render(request, 'login.html', {'form': form, 'next': next_url})
+    return render(request, 'login.html', {'next': next_url})
 
 def index(request):
     role = request.GET.get('role', 'tenant')
