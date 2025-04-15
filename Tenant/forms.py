@@ -4,7 +4,7 @@ from .models import Tenant, HomeOwner, FamilyMember, PreviousResidence, User
 class TenantForm(forms.ModelForm):
     class Meta:
         model = Tenant
-        exclude = ['user', 'status', 'police_status', 'police_remark']
+        exclude = ['user', 'status', 'police_status', 'police_remark', 'created_at', 'updated_at']
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'photo': forms.FileInput(attrs={'accept': 'image/*', 'class': 'form-control'}),
