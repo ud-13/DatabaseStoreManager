@@ -317,6 +317,11 @@ def signup_homeowner(request):
                     email = form.cleaned_data['email']
                     password = form.cleaned_data['password']
                     
+                    # Check if email already exists
+                    if User.objects.filter(email=email).exists():
+                        messages.error(request, 'An account with this email already exists. Please use a different email or login.')
+                        return render(request, 'signup_homeowner.html', {'form': form})
+                        
                     # Create new user
                     user = User.objects.create_user(
                         email=email,
@@ -336,7 +341,7 @@ def signup_homeowner(request):
                     messages.success(request, 'Account created successfully!')
                     return redirect('HomeOwnerdashboard')
             except Exception as e:
-                messages.error(request, f'Error creating account: {str(e)}')
+                messages.error(request, 'Error creating account. Please try again.')
                 print(f"Error: {str(e)}")  # For debugging
         else:
             for field, errors in form.errors.items():
