@@ -37,7 +37,7 @@ class TenantForm(forms.ModelForm):
 class HomeOwnerForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    
+
     class Meta:
         model = HomeOwner
         exclude = ['user', 'created_at', 'updated_at', 'age']
