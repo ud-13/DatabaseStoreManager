@@ -39,7 +39,19 @@ def login(request):
     if request.method == 'GET':
         form = UserLoginForm()
         return render(request, 'login.html', {'form': form, 'next': next_url})
-    return render(request, 'login.html', {'next': next_url})
+    elif request.method == 'POST':
+        form = UserLoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            role = form.cleaned_data['role']
+            try:
+                user = User.objects.get(email=email)
+                if user.role == 'police':
+                    auth_login(request, user)
+                    return redirect('Policedashboard')
+            except User.DoesNotExist:
+                pass
+    return render(request, 'login.html', {'form': form, 'next': next_url})
 
 def index(request):
     role = request.GET.get('role', 'tenant')
@@ -448,6 +460,7 @@ def verify_otp(request):
         elif role == 'home_owner':
             redirect_url = reverse('signup_homeowner')
         elif role == 'police':
+            auth_login(request, user)
             redirect_url = reverse('Policedashboard')
         else:
             redirect_url = reverse('index')
