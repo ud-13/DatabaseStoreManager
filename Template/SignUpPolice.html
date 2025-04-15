@@ -1,52 +1,259 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Police Registration{% endblock %}
+{% block title %}Police Sign Up{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    /* Signup Container */
+    .signup-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    .signup-container h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a73e8;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    /* Form Group Styles */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        outline: none;
+    }
+
+    .form-group input:focus {
+        border-color: #1a73e8;
+        box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+    }
+
+    /* Horizontal Layout for Fields */
+    .name-fields, .horizontal-fields {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .name-fields .form-group, .horizontal-fields .form-group {
+        flex: 1;
+    }
+
+    /* Submit Button */
+    .submit-button-container {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .submit-button {
+        padding: 0.75rem 1.5rem;
+        background-color: #1a73e8;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-button:hover {
+        background-color: #0d47a1;
+    }
+    
+    /* Alert styles */
+    .alert {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .alert-warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+    }
+    
+    .alert-info {
+        background-color: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+    }
+    
+    .alert i {
+        margin-right: 0.5rem;
+    }
+    
+    /* Process steps */
+    .process-steps {
+        margin-top: 2rem;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .process-steps h5 {
+        color: #1a73e8;
+        margin-bottom: 1rem;
+    }
+    
+    .process-steps ol {
+        padding-left: 1.5rem;
+    }
+    
+    .process-steps li {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Info box */
+    .info-box {
+        padding: 1.5rem;
+        background-color: #e8f0fe;
+        border-radius: 8px;
+        margin: 2rem 0;
+        text-align: center;
+    }
+    
+    .info-box i {
+        font-size: 3rem;
+        color: #1a73e8;
+        margin-bottom: 1rem;
+    }
+    
+    .info-box h5 {
+        color: #1a73e8;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-box .btn {
+        background-color: #1a73e8;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+        transition: background-color 0.3s ease;
+    }
+    
+    .info-box .btn:hover {
+        background-color: #0d47a1;
+    }
+    
+    @media (max-width: 768px) {
+        .name-fields, .horizontal-fields {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-danger text-white">
-                    <h3 class="mb-0">Police Portal</h3>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-warning">
-                        <p><i class="fas fa-exclamation-triangle"></i> This portal is exclusively for authorized police personnel.</p>
-                        <p>To gain access, please complete the verification process by providing your official email address for OTP verification.</p>
-                    </div>
-                    
-                    <div class="text-center mb-4">
-                        <i class="fas fa-shield-alt fa-5x text-danger"></i>
-                    </div>
-                    
-                    <div class="row justify-content-center">
-                        <div class="col-md-10">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title text-center">Authentication Required</h5>
-                                    <p class="card-text text-center">Please use your official police department email address for verification.</p>
-                                    
-                                    <div class="d-grid gap-2">
-                                        <a href="{% url 'login' %}?role=police" class="btn btn-danger">Proceed to Verification</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <h5>Police Verification Process:</h5>
-                        <ol>
-                            <li>Login using your official email address</li>
-                            <li>Verify your identity through OTP verification</li>
-                            <li>Access the police dashboard to review tenant applications</li>
-                            <li>Approve or reject tenant applications with appropriate remarks</li>
-                        </ol>
-                    </div>
-                </div>
+<div class="signup-container">
+    <h2>Police Officer Sign Up</h2>
+    
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i> This portal is exclusively for authorized police personnel. Please complete the verification process by providing your official details.
+    </div>
+    
+    <div class="info-box">
+        <i class="fas fa-shield-alt"></i>
+        <h5>Authentication Required</h5>
+        <p>Please use your official police department email address for verification.</p>
+        <a href="{% url 'login' %}?role=police" class="btn">Proceed to Email Verification</a>
+    </div>
+    
+    <form action="#" method="post">
+        {% csrf_token %}
+        <!-- Name Fields (Horizontal Layout) -->
+        <div class="name-fields">
+            <!-- SHO First Name -->
+            <div class="form-group">
+                <label for="sho-first-name">SHO First Name</label>
+                <input type="text" id="sho-first-name" name="sho_first_name" required>
+            </div>
+
+            <!-- Middle Name -->
+            <div class="form-group">
+                <label for="middle-name">Middle Name</label>
+                <input type="text" id="middle-name" name="middle_name">
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label for="last-name">Last Name</label>
+                <input type="text" id="last-name" name="last_name" required>
             </div>
         </div>
+
+        <!-- Outpost and Phone Number (Horizontal Layout) -->
+        <div class="horizontal-fields">
+            <!-- Outpost Name -->
+            <div class="form-group">
+                <label for="outpost-name">Outpost Name</label>
+                <input type="text" id="outpost-name" name="outpost_name" required>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+                <label for="phone-number">Phone Number</label>
+                <input type="tel" id="phone-number" name="phone_number" required>
+            </div>
+        </div>
+
+        <!-- District and Pin Code (Horizontal Layout) -->
+        <div class="horizontal-fields">
+            <!-- District -->
+            <div class="form-group">
+                <label for="district">District</label>
+                <input type="text" id="district" name="district" required>
+            </div>
+
+            <!-- Pin Code -->
+            <div class="form-group">
+                <label for="pincode">Pin Code</label>
+                <input type="text" id="pincode" name="pincode" required>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group submit-button-container">
+            <button type="submit" class="submit-button">Sign Up</button>
+        </div>
+    </form>
+    
+    <div class="process-steps">
+        <h5>Police Verification Process:</h5>
+        <ol>
+            <li>Login using your official email address</li>
+            <li>Verify your identity through OTP verification</li>
+            <li>Complete the registration form with your details</li>
+            <li>Access the police dashboard to review tenant applications</li>
+            <li>Approve or reject tenant applications with appropriate remarks</li>
+        </ol>
     </div>
 </div>
 {% endblock %}

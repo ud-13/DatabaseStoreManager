@@ -25,13 +25,13 @@ def generate_otp():
     return str(random.randint(100000, 999999))
 
 def is_police(user):
-    return user.role == 'police'
+    return user.is_authenticated and user.role == 'police'
 
 def is_homeowner(user):
-    return user.role == 'home_owner'
+    return user.is_authenticated and user.role == 'home_owner'
 
 def is_tenant(user):
-    return user.role == 'tenant'
+    return user.is_authenticated and user.role == 'tenant'
 
 # View functions
 def login(request):
@@ -45,7 +45,6 @@ def index(request):
     context = {'role': role}
     return render(request, 'index.html', context)
 
-@user_passes_test(is_police)
 def SignUpPolice(request):
     return render(request, 'SignUpPolice.html')
 
