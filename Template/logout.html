@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Logged Out{% endblock %}
+
+{% block extra_css %}
+<style>
+    .logout-container {
+        text-align: center;
+        padding: 4rem 2rem;
+        max-width: 600px;
+        margin: 2rem auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logout-icon {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .message {
+        font-size: 1.5rem;
+        color: #1a73e8;
+        margin-bottom: 1rem;
+    }
+    
+    .sub-message {
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .redirect-link {
+        display: inline-block;
+        color: #fff;
+        background-color: #1a73e8;
+        text-decoration: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+    
+    .redirect-link:hover {
+        background-color: #0d47a1;
+        text-decoration: none;
+    }
+    
+    .countdown {
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="logout-container">
+    <img src="{% static 'img/logout.png' %}" alt="Logout" class="logout-icon">
+    
+    <div class="message">
+        {% if user.is_authenticated %}
+            {% if user.role == 'tenant' %}
+                Tenant logged out successfully.
+            {% elif user.role == 'home_owner' %}
+                Home Owner logged out successfully.
+            {% elif user.role == 'police' %}
+                Police Officer logged out successfully.
+            {% else %}
+                You have been logged out.
+            {% endif %}
+        {% else %}
+            You have been logged out.
+        {% endif %}
+    </div>
+    
+    <p class="sub-message">
+        Thank you for using the Tenant Verification Portal. Have a great day!
+    </p>
+    
+    <a href="{% url 'login' %}" class="redirect-link">
+        Return to Login Page
+    </a>
+    
+    <p class="countdown">
+        Redirecting to login page in <span id="timer">5</span> seconds...
+    </p>
+</div>
+
+<script>
+    // Countdown for automatic redirect
+    let seconds = 5;
+    const timerElement = document.getElementById('timer');
+    
+    const countdown = setInterval(function() {
+        seconds--;
+        timerElement.textContent = seconds;
+        
+        if (seconds <= 0) {
+            clearInterval(countdown);
+            window.location.href = "{% url 'login' %}";
+        }
+    }, 1000);
+</script>
+{% endblock %}

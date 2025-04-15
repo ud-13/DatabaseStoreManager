@@ -20,6 +20,7 @@ urlpatterns = [
     path('verify-otp/', views.verify_otp, name='verify_otp'),
     path('check-verification/', views.check_verification, name='check_verification'),
     path('payment/', views.payment_view, name='payment'),
+    path('logout/', views.logout_view, name='logout'),
 ]
 
 # Serve media files in development

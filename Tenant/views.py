@@ -460,3 +460,14 @@ def payment_view(request):
     # In a real application, you might get the actual amount from a session or database
     amount = 150
     return render(request, 'Payment.html', {'amount': amount})
+
+def logout_view(request):
+    """
+    View for handling user logout.
+    """
+    # Log the user out
+    if request.user.is_authenticated:
+        from django.contrib.auth import logout
+        logout(request)
+    
+    return render(request, 'logout.html')
