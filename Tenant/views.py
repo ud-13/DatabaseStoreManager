@@ -452,3 +452,11 @@ def verify_otp(request):
             'success': False, 
             'error': 'An error occurred while verifying OTP'
         }, status=500)
+        
+def payment_view(request):
+    """
+    View for processing payments for tenant registration.
+    """
+    # In a real application, you might get the actual amount from a session or database
+    amount = 150
+    return render(request, 'Payment.html', {'amount': amount})
