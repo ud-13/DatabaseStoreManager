@@ -59,8 +59,13 @@ def ApplicationStatus(request):
             messages.error(request, "User not found")
     return render(request, 'ApplicationStatus.html')
 
-@user_passes_test(is_homeowner)
+@login_required
+@user_passes_test(is_homeowner, login_url='login')
 def HomeOwnerdashboard(request):
+    if not request.user.is_authenticated or request.user.role != 'home_owner':
+        messages.error(request, 'You do not have permission to access this page.')
+        return redirect('login')
+        
     try:
         homeowner = HomeOwner.objects.get(user=request.user)
         tenants = Tenant.objects.filter(owner_phone_number=homeowner.phone)
@@ -69,8 +74,13 @@ def HomeOwnerdashboard(request):
         messages.error(request, "Home owner profile not found")
         return redirect('signup_homeowner')
 
-@user_passes_test(is_police)
+@login_required
+@user_passes_test(is_police, login_url='login')
 def Policedashboard(request):
+    if not request.user.is_authenticated or request.user.role != 'police':
+        messages.error(request, 'You do not have permission to access this page.')
+        return redirect('login')
+    
     tenants = Tenant.objects.filter(status='approved', police_status='pending')
     return render(request, 'Policedashboard.html', {'tenants': tenants})
 
@@ -307,24 +317,17 @@ def signup_homeowner(request):
                     email = form.cleaned_data['email']
                     password = form.cleaned_data['password']
                     
-                    # Create or get user
-                    user, created = User.objects.get_or_create(
+                    # Create new user
+                    user = User.objects.create_user(
                         email=email,
-                        defaults={
-                            'role': 'home_owner',
-                            'is_active': True
-                        }
+                        password=password,
+                        role='home_owner',
+                        is_active=True
                     )
-                    
-                    if created:
-                        user.set_password(password)
-                        user.save()
                     
                     # Create home owner profile
                     homeowner = form.save(commit=False)
                     homeowner.user = user
-                    homeowner.created_at = timezone.now()
-                    homeowner.updated_at = timezone.now()
                     homeowner.save()
                     
                     # Log in the user
@@ -334,6 +337,7 @@ def signup_homeowner(request):
                     return redirect('HomeOwnerdashboard')
             except Exception as e:
                 messages.error(request, f'Error creating account: {str(e)}')
+                print(f"Error: {str(e)}")  # For debugging
         else:
             for field, errors in form.errors.items():
                 for error in errors:
