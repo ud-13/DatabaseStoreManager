@@ -40,7 +40,7 @@ class HomeOwnerForm(forms.ModelForm):
     
     class Meta:
         model = HomeOwner
-        exclude = ['user']
+        exclude = ['user', 'created_at', 'updated_at']
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'middle_name': forms.TextInput(attrs={'class': 'form-control'}),

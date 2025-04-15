@@ -323,6 +323,8 @@ def signup_homeowner(request):
                     # Create home owner profile
                     homeowner = form.save(commit=False)
                     homeowner.user = user
+                    homeowner.created_at = timezone.now()
+                    homeowner.updated_at = timezone.now()
                     homeowner.save()
                     
                     # Log in the user
